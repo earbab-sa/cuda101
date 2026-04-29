@@ -63,27 +63,47 @@ CPUs, even with SIMD, tend to do better for
 
 ## 3. CUDA Ecosystem
 The CUDA ecosystem is a stack: drivers at the bottom, the CUDA Toolkit on top, then high‑level libraries, tools, and Python bindings that you use directly. 
-### 3.1 CUDA drivers
+### 3.1 CUDA Drivers
 NVIDIA’s GPU driver lets the OS and applications talk to the GPU and is required to run any CUDA program. It manages low‑level tasks like context creation, 
 memory management, and kernel scheduling on the hardware.
 
 ### 3.2 CUDA Toolkit
 The CUDA Toolkit is the developer package: compiler (nvcc), runtime libraries, headers, GPU‑accelerated math and algorithm libraries, and tools. It provides both low‑level (driver/runtime APIs) and higher‑level abstractions so you can write, build, debug, and optimize GPU code.
 
-### 3.3 Core CUDA libraries
+### 3.3 Core CUDA Libraries
 - cuBLAS: GPU‑accelerated BLAS (dense linear algebra) for vector/matrix ops like GEMM; heavily used under the hood in ML and scientific codes.    
 - cuDNN: Deep neural network primitives (convolutions, pooling, RNNs, etc.), powering many DL frameworks’ GPU backends.    
 - Thrust: A C++ template library offering STL‑like algorithms (sort, reduce, scan, etc.) on GPUs, so you can write high‑level C++ instead of raw kernels for common patterns.
 - Profilers and tools (Nsight family): Nsight Systems / Nsight Compute are NVIDIA’s profiling tools for timeline analysis, kernel performance, memory behavior, and bottleneck identification in CUDA applications. They integrate with the Toolkit to help you inspect kernel launches, GPU utilization, and interactions between CPU and GPU.     
 
-### 3.4 Python bindings and GPU‑Python stacks
+### 3.4 Python Bindings and GPU‑Python Stacks
 - PyCUDA exposes CUDA driver/runtime APIs in Python, letting you compile and launch custom kernels and manage device memory directly from Python.     
 - Numba (CUDA target) uses a JIT compiler to turn decorated Python functions into CUDA kernels, giving a Pythonic path to custom GPU code without writing C++.    
 - CuPy is a NumPy/SciPy‑like array library backed by CUDA; it wraps libraries such as cuBLAS and cuDNN and provides high‑level GPU arrays plus options for
   raw kernels when needed.
 
 ## 4. Tooling
+### nvcc: the CUDA Compiler
+```nvcc``` is NVIDIA’s compiler driver that splits host (CPU) and device (GPU) code in a ```.cu``` file and invokes the right host and device compilers. You compile CUDA 
+sources with commands like ```nvcc -o myprog main.cu```, producing a normal executable that links against CUDA runtime libraries.
 
+### VS Code or CLI
+- CLI workflow: Use a terminal with ```nvcc``` on your ```PATH```, compile via ```nvcc``` commands or a Makefile/CMake build, then run your binary from the shell.    
+- VS Code: Install C/C++ extensions, configure include paths and compiler path to point at the CUDA Toolkit, then use build tasks/launch configs so VS Code
+calls ```nvcc``` and can provide IntelliSense and debugging.
+
+### Basic CUDA Project Structure
+Every CUDA program is “heterogeneous”: host code sets up data and launches kernels, and device code (in ```.cu```/```.cuh```) runs on the GPU using the triple‑chevron syntax and APIs like ```cudaDeviceSynchronize``` to coordinate with the CPU.    
+A minimal CUDA project usually looks like this.    
+- Source files:
+  * ```src/main.cu``` – host ```main``` plus kernels, or
+  * ```src/kernels.cu``` (device code) and ```src/main.cpp``` (host code) if you separate concerns.
+
+- Headers:
+  * ```include/kernels.cuh``` for kernel declarations and shared types.
+
+- Build files:
+  * ```CMakeLists.txt``` or ```Makefile``` that compiles ```.cu``` with ```nvcc``` and links CUDA libraries.
 
 ## Wrap Up: 
-Keep note of all the new terminology you encountered in this page and make sure you are comfortable describing each in a sentence or two after you completed the modules. 
+Keep notes of all the new terminology you encountered in this page and make sure you are comfortable describing each in a sentence or two after you completed the modules. 
