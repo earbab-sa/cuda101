@@ -93,8 +93,7 @@ sources with commands like ```nvcc -o myprog main.cu```, producing a normal exec
 calls ```nvcc``` and can provide IntelliSense and debugging.
 
 ### Basic CUDA Project Structure
-Every CUDA program is “heterogeneous”: host code sets up data and launches kernels, and device code (in ```.cu```/```.cuh```) runs on the GPU using the triple‑chevron syntax and APIs like ```cudaDeviceSynchronize``` to coordinate with the CPU.    
-A minimal CUDA project usually looks like this.    
+Every CUDA program is “heterogeneous”: host code sets up data and launches kernels, and device code (in ```.cu```/```.cuh```) runs on the GPU using the triple‑chevron syntax and APIs like ```cudaDeviceSynchronize``` to coordinate with the CPU. A minimal CUDA project usually looks like this:    
 - Source files:
   * ```src/main.cu``` – host ```main``` plus kernels, or
   * ```src/kernels.cu``` (device code) and ```src/main.cpp``` (host code) if you separate concerns.
